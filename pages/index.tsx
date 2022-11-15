@@ -24,7 +24,7 @@ export default function Home() {
   ];
 
   const [hours, setHours] = useState<
-    Record<string, { hours: number; feriado: boolean }>
+    Record<string, { hours: number | ""; feriado: boolean }>
   >({
     Lunes: { hours: 0, feriado: false },
     Martes: { hours: 0, feriado: false },
@@ -47,7 +47,7 @@ export default function Home() {
     (acc, weekday) => {
       const { hours: dayHours, feriado } = hours[weekday];
 
-      return acc + dayHours * salaryPerHour * (feriado ? 2 : 1);
+      return acc + (dayHours || 0) * salaryPerHour * (feriado ? 2 : 1);
     },
     0
   );
@@ -62,7 +62,7 @@ export default function Home() {
   const handleChangeHours = (index: number, value: string) => {
     const newHours = { ...hours };
     const weekday = Object.keys(hours)[index] as keyof typeof hours;
-    newHours[weekday].hours = Number(value) || 0;
+    newHours[weekday].hours = Number(value) || "";
     setHours(newHours);
   };
 
@@ -98,8 +98,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container>
-        <Stack spacing={8}>
+      <Container py={8}>
+        <Stack spacing={8} alignItems="center">
           <Stack spacing={6}>
             <Stack spacing={2}>
               <chakra.label>Salario x hora</chakra.label>
@@ -153,10 +153,8 @@ export default function Home() {
             </Button>
           </Stack>
 
-          <Button>Calcular</Button>
-
-          <Text fontWeight="bold" fontSize="xl">
-            Sueldo: {salary}
+          <Text fontWeight="bold" fontSize="2xl">
+            Sueldo: <chakra.span bgColor="yellow.200">{salary}</chakra.span>
           </Text>
         </Stack>
       </Container>
